@@ -8,6 +8,7 @@ from . import service
 from .schemas import (
     ErrorItem,
     NotificationSettingsEnvelope,
+    NotificationSendResponse,
     NotificationTestResponse,
     StandardErrorResponse,
     UpdateNotificationSettingsRequest,
@@ -78,5 +79,22 @@ def test_notification(
     return NotificationTestResponse(
         success=True,
         message="Test notification sent successfully.",
+        data=None,
+    )
+
+
+@router.post(
+    "/send",
+    response_model=NotificationSendResponse,
+    dependencies=[Depends(require_admin)],
+)
+def send_notification_now(
+    session: Session = Depends(get_session),
+    current_user=Depends(require_admin),
+) -> NotificationSendResponse:
+    service.send_now(session, modified_by=current_user.username)
+    return NotificationSendResponse(
+        success=True,
+        message="Notification sent successfully.",
         data=None,
     )

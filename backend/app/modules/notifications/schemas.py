@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import List, Optional
 
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, ConfigDict
 
 
 class ErrorItem(BaseModel):
@@ -27,9 +27,7 @@ class NotificationSettingsResponse(BaseModel):
     attachment_file_name_template: Optional[str]
     created_at: datetime | None = None
     updated_at: datetime | None = None
-
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class NotificationSettingsEnvelope(BaseModel):
@@ -51,6 +49,12 @@ class UpdateNotificationSettingsRequest(BaseModel):
 
 
 class NotificationTestResponse(BaseModel):
+    success: bool = True
+    message: str
+    data: None = None
+
+
+class NotificationSendResponse(BaseModel):
     success: bool = True
     message: str
     data: None = None

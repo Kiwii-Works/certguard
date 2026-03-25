@@ -40,6 +40,19 @@ def count_expiring_soon(session: Session, cutoff_date: date) -> int:
     )
 
 
+def list_expiring_within_days(session: Session, cutoff_date: date) -> list[Certificate]:
+    return (
+        session.query(Certificate)
+        .filter(
+            Certificate.is_deleted.is_(False),
+            Certificate.expiration_date <= cutoff_date,
+            Certificate.expiration_date >= date.today(),
+        )
+        .order_by(Certificate.expiration_date.asc())
+        .all()
+    )
+
+
 def get_certificate_by_id(session: Session, certificate_id: int) -> Certificate | None:
     return (
         session.query(Certificate)

@@ -12,7 +12,22 @@ class LogsError(Exception):
         self.field = field
 
 
-    _ALLOWED_ENTITY_DOMAINS = {"user", "certificate", "import", "auth", "notification"}
+_ALLOWED_ENTITY_DOMAINS = {"user", "certificate", "import", "auth", "notification"}
+_ALLOWED_ACTION_TYPES = {
+    "login",
+    "logout",
+    "create_user",
+    "update_user",
+    "change_user_password",
+    "delete_user",
+    "create_certificate",
+    "update_certificate",
+    "delete_certificate",
+    "import_certificates",
+    "update_notification_settings",
+    "test_notification",
+    "send_notification",
+}
 
 
 def _parse_datetime(value: str | None, field: str) -> datetime | None:
@@ -39,6 +54,8 @@ def list_logs(
 
     if entity_domain and entity_domain not in _ALLOWED_ENTITY_DOMAINS:
         raise LogsError("Invalid entity_domain.", field="entity_domain")
+    if action_type and action_type not in _ALLOWED_ACTION_TYPES:
+        raise LogsError("Invalid action_type.", field="action_type")
 
     logs = repository.list_transaction_logs(
         session,
@@ -66,6 +83,8 @@ def create_log(
     modified_by: str,
     details: list[dict],
 ):
+    if action_type not in _ALLOWED_ACTION_TYPES:
+        raise LogsError("Invalid action_type.", field="action_type")
     now = datetime.utcnow()
     log = TransactionLog(
         transaction_uid=str(uuid4()),

@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import Boolean, Column, DateTime, Integer, String
+from sqlalchemy import Boolean, Column, DateTime, Integer, String, func
 from sqlalchemy.dialects.sqlite import JSON
 
 from ...core.database import Base
@@ -19,7 +19,5 @@ class NotificationSettings(Base):
     subject_template = Column(String, nullable=False)
     body_template = Column(String, nullable=False)
     attachment_file_name_template = Column(String, nullable=True)
-    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
-    updated_at = Column(
-        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False
-    )
+    created_at = Column(DateTime, server_default=func.utc.now(), nullable=False)
+    updated_at = Column(DateTime, server_default=func.utc.now(), nullable=False)

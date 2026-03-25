@@ -884,6 +884,29 @@ This endpoint is useful for validating SMTP configuration and template rendering
 
 ---
 
+## 7.4 Send Notification Now
+### Endpoint
+```http
+POST /api/v1/notifications/send
+```
+
+### Access
+Admin only
+
+### Purpose
+Trigger the real notification send flow manually (same behavior as the scheduled job).
+
+### Success Response
+```json
+{
+  "success": true,
+  "message": "Notification sent successfully.",
+  "data": null
+}
+```
+
+---
+
 ## 8. Dashboard API
 
 ## 8.1 Get Dashboard Summary
